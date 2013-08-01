@@ -1,0 +1,52 @@
+﻿<Application
+    x:Class="breakpoint.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:breakpoint"
+    xmlns:common="using:breakpoint.Common">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <x:String x:Key="AppName">breakpoint</x:String>
+            <local:PrivacyConverter x:Key="privacyConverter"/>
+            <local:PluralConverter x:Key="plural"/>
+            <local:RelativeDateConverter x:Key="relativeDateFormatter"/>
+            <local:ColorToBrushConverter x:Key="colorConverter"/>
+            <local:NullVisibilityConverter x:Key="nullVisibility"/>
+            <local:IssueNotesTemplateSelector x:Key="notesSelector" />
+            <common:BooleanNegationConverter x:Key="negation" />
+            <local:DataClient x:Key="client"/>
+
+            <SolidColorBrush x:Key="ComboBoxSelectedBackgroundThemeBrush" Color="#909e0505"/>
+            <SolidColorBrush x:Key="ComboBoxSelectedPointerOverBackgroundThemeBrush" Color="#9e0505"/>
+            
+            <SolidColorBrush x:Key="ToggleSwitchCurtainPointerOverBackgroundThemeBrush" Color="#A09e0505" />
+            <SolidColorBrush x:Key="ToggleSwitchCurtainPressedBackgroundThemeBrush" Color="#FF9e0505" />
+            <SolidColorBrush x:Key="ToggleSwitchCurtainBackgroundThemeBrush" Color="#FF9e0505"/>
+            
+            <SolidColorBrush x:Key="ProgressBarBackgroundThemeBrush" Color="Transparent" />
+            <SolidColorBrush x:Key="ProgressBarBorderThemeBrush" Color="Transparent" />
+            <SolidColorBrush x:Key="ProgressBarForegroundThemeBrush" Color="White" />
+            <SolidColorBrush x:Key="ProgressBarIndeterminateForegroundThemeBrush" Color="White" />
+            <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#FF9E0505" />
+
+            <SolidColorBrush x:Key="ListViewItemCheckHintThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="ListViewItemCheckSelectingThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="ListViewItemCheckThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="ListViewItemDragBackgroundThemeBrush" Color="#994617B4" />
+            <SolidColorBrush x:Key="ListViewItemDragForegroundThemeBrush" Color="White" />
+            <SolidColorBrush x:Key="ListViewItemFocusBorderThemeBrush" Color="#FFFFFFFF"  />
+            <SolidColorBrush x:Key="ListViewItemOverlayBackgroundThemeBrush" Color="#A6000000" />
+            <SolidColorBrush x:Key="ListViewItemOverlayForegroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="ListViewItemOverlaySecondaryForegroundThemeBrush" Color="#99FFFFFF"/>
+            <SolidColorBrush x:Key="ListViewItemPlaceholderBackgroundThemeBrush" Color="#FF3D3D3D" />
+            <SolidColorBrush x:Key="ListViewItemPointerOverBackgroundThemeBrush" Color="#4DFFFFFF" />
+            <SolidColorBrush x:Key="ListViewItemSelectedBackgroundThemeBrush" Color="#FF9E0505" />
+            <SolidColorBrush x:Key="ListViewItemSelectedForegroundThemeBrush" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="#FF9E1515" />
+            <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBorderThemeBrush" Color="#FF9E0505" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

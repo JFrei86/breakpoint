@@ -1,0 +1,177 @@
+﻿<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:breakpoint"
+    xmlns:common="using:breakpoint.Common"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:DataModel="using:breakpoint.DataModel"
+    x:Name="pageRoot"
+    x:Class="breakpoint.HomePage"
+    DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Mode=Self}}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <x:String x:Key="ChevronGlyph">&#xE26B;</x:String>
+        <CollectionViewSource x:Key="notificationsViewSource"
+                              IsSourceGrouped="False"
+                              Source="{Binding client.unreadNotifications}"/>
+        <CollectionViewSource x:Key="pinnedIssuesViewSource"
+                              IsSourceGrouped="False"
+                              Source="{Binding client.pinnedIssues}"/>
+        <CollectionViewSource x:Key="recentReposViewSource"
+                              IsSourceGrouped="False"
+                              Source="{Binding client.recentRepos}"/>
+        <CollectionViewSource x:Key="userOrgsViewSource"
+                              IsSourceGrouped="True"
+                              Source="{Binding client.userOrgs}"
+                              ItemsPath="repos"/>
+        
+    </Page.Resources>
+    <Page.BottomAppBar>
+        <CommandBar Background="#ff600505" BorderBrush="Transparent">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton x:Name="RefreshButton" Icon="Sync" Label="Refresh" Click="AppBarButton_Click"/>
+                <AppBarButton x:Name="LogoutButton" Icon="Permissions" Label="Log Out" Click="AppBarButton_Click"/>
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="UnpinButton" Icon="Unpin" Label="Unpin" Click="AppBarButton_Click" Visibility="{Binding PinnedIssuesGridView.SelectedItems, Converter={StaticResource nullVisibility}, ConverterParameter=false}"/>
+                <AppBarButton x:Name="NotificationsButton" Icon="Flag" Label="Clear Notifications" Click="AppBarButton_Click"/>
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
+    <!--
+        This grid acts as a root panel for the page.
+    -->
+    <Grid>
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+        <Hub Grid.Row="1">
+            <Hub.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Width="65" Height="65"  Margin="0,0,10,0">
+                        <Border.Background>
+                            <ImageBrush ImageSource="Assets/blacktocat-32.png"/>
+                        </Border.Background>
+                        <Image Source="{Binding client.authenticatedUser.avatar_url}" Height="65" Width="65"/>
+                    </Border>
+                    <TextBlock Grid.Column="1" Text="{StaticResource AppName}" FontFamily="Levenim MT" MaxHeight="65"/>
+                </Grid>
+            </Hub.Header>
+            <HubSection Width="750" Header="Home" Background="#FF9E0505">
+                <DataTemplate>
+                    <Grid ScrollViewer.VerticalScrollMode="Enabled">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="1" Style="{StaticResource SubheaderTextBlockStyle}" Text="No Unread Notifications." FontSize="20" Margin="5"
+							Visibility="{Binding client.unreadNotifications.Count, ConverterParameter=false, Converter={StaticResource nullVisibility}}"/>
+                        <ListView Grid.Row="1" SelectionMode="None" ItemsSource="{Binding Source={StaticResource notificationsViewSource}}"
+							Visibility="{Binding client.unreadNotifications.Count, ConverterParameter=true, Converter={StaticResource nullVisibility}}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Ellipse Width="10" Height="10" Fill="White" Margin="5"/>
+                                        <TextBlock Text="{Binding subject.title}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <TextBlock Grid.Row="2" Style="{StaticResource SubheaderTextBlockStyle}" Text="No Pinned Issues." FontSize="20" Margin="5"
+							Visibility="{Binding client.pinnedIssues.Count, ConverterParameter=false, Converter={StaticResource nullVisibility}}"/>
+                        <GridView Grid.Row="2"
+                            x:Name="PinnedIssuesGridView"
+                                  ItemClick="PinnedIssue_Click"
+                                  ItemTemplate="{StaticResource IssueTileTemplate}"
+                                  ItemsSource="{Binding Source={StaticResource pinnedIssuesViewSource}}"
+                                  SelectionMode="Multiple">
+                            <GridView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VariableSizedWrapGrid Orientation="Horizontal" MaxWidth="650"/>
+                                </ItemsPanelTemplate>
+                            </GridView.ItemsPanel>
+                        </GridView>
+                    </Grid>
+                </DataTemplate>
+            </HubSection>
+
+            <HubSection x:Uid="Section1Header" Header="Recent Repositories" Width="420">
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Style="{StaticResource SubheaderTextBlockStyle}" Text="No Recent Repositories." FontSize="20" Margin="5"
+							Visibility="{Binding client.recentRepos.Count, ConverterParameter=false, Converter={StaticResource nullVisibility}}"/>
+                        <GridView ItemsSource="{Binding Source={StaticResource recentReposViewSource}}"
+                                  ItemTemplate="{StaticResource RecentRepoTile}"
+                                  IsItemClickEnabled="True"
+                                  IsSwipeEnabled="True"
+                                  ItemClick="Repo_Click"
+                                  SelectionMode="Single">
+                            <GridView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VariableSizedWrapGrid Orientation="Vertical"/>
+                                </ItemsPanelTemplate>
+                            </GridView.ItemsPanel>
+                        </GridView>
+                    </Grid>
+                </DataTemplate>
+            </HubSection>
+
+            <HubSection x:Uid="Section2Header" MinWidth="420" Header="Organizations">
+                <DataTemplate>
+                    <GridView
+						x:Name="userOrgsList"
+						Margin="-14,-4,0,0"
+						ItemsSource="{Binding Source={StaticResource userOrgsViewSource}}"
+						ItemTemplate="{StaticResource RepoSummaryTemplate}"
+						IsSwipeEnabled="True"
+						IsItemClickEnabled="True"
+						SelectionMode="Multiple"
+						ItemClick="Repo_Click">
+                        <GridView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsWrapGrid  Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </GridView.ItemsPanel>
+                        <GridView.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="1,0,0,6">
+                                            <Button
+    								AutomationProperties.Name="Group Title"
+    								Style="{StaticResource TextBlockButtonStyle}">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding name}" Margin="3,-7,10,10" Style="{StaticResource SubheaderTextBlockStyle}" />
+                                                    <TextBlock Text="{StaticResource ChevronGlyph}" FontFamily="Segoe UI Symbol" Margin="0,-7,0,10" Style="{StaticResource SubheaderTextBlockStyle}"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                                <GroupStyle.Panel>
+                                    <ItemsPanelTemplate>
+                                        <VariableSizedWrapGrid Orientation="Vertical" Margin="0,0,80,0" MaxWidth="980"/>
+                                    </ItemsPanelTemplate>
+                                </GroupStyle.Panel>
+                            </GroupStyle>
+                        </GridView.GroupStyle>
+                    </GridView>
+                </DataTemplate>
+            </HubSection>
+        </Hub>
+        <ProgressBar VerticalAlignment="Top" x:Name="LoadingProgressBar" Background="{x:Null}" BorderBrush="White" Foreground="White" Height="15" Visibility="Visible"/>
+    </Grid>
+</Page>
