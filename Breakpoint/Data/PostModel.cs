@@ -55,7 +55,7 @@ namespace breakpoint.PostModel
                 Issue rtn = new Issue();
                 rtn.title = typedContent.title;
                 rtn.body = typedContent.body;
-                if(typedContent.assignee != null)
+                if (typedContent.assignee != null)
                     rtn.assignee = typedContent.assignee.login;
                 rtn.labels = new string[typedContent.labels.Length];
                 for (int i = 0; i < rtn.labels.Length; i++)

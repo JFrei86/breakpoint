@@ -20,6 +20,7 @@ namespace breakpoint
         {
             if (item.GetType() == typeof(Comment))
             {
+                
                 return Application.Current.Resources["CommentTemplate"] as DataTemplate;
             }
             else

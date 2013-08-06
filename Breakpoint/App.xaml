@@ -42,7 +42,6 @@
             <SolidColorBrush x:Key="ListViewItemOverlayForegroundThemeBrush" Color="#FFFFFFFF" />
             <SolidColorBrush x:Key="ListViewItemOverlaySecondaryForegroundThemeBrush" Color="#99FFFFFF"/>
             <SolidColorBrush x:Key="ListViewItemPlaceholderBackgroundThemeBrush" Color="#FF3D3D3D" />
-            <SolidColorBrush x:Key="ListViewItemPointerOverBackgroundThemeBrush" Color="#4DFFFFFF" />
             <SolidColorBrush x:Key="ListViewItemSelectedBackgroundThemeBrush" Color="#FF9E0505" />
             <SolidColorBrush x:Key="ListViewItemSelectedForegroundThemeBrush" Color="#FFFFFFFF" />
             <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="#FF9E1515" />

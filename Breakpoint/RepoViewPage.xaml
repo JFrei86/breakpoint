@@ -11,12 +11,50 @@
     mc:Ignorable="d">
 
     <Page.Resources>
+        <DataTemplate x:Key="EventTemplate">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.RowSpan="2" Grid.Column="0" Source="{Binding actor.avatar_url}" Height="35" Width="35" VerticalAlignment="Top" Margin="0,5,0,0"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding actor.login}" Typography.Capitals="AllSmallCaps" FontWeight="Bold" FontFamily="Segoe UI" FontSize="18" Padding="10,0" HorizontalAlignment="Left"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding verb}" FontFamily="Segoe UI Symbol" FontSize="14" HorizontalAlignment="Stretch" TextWrapping="Wrap" Padding="10,0"/>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="CommentTemplate">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image Grid.RowSpan="2" Grid.Column="0" Source="{Binding user.avatar_url}" Height="35" Width="35" VerticalAlignment="Top" Margin="0,5,0,0"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding user.login}" Typography.Capitals="AllSmallCaps" FontWeight="Bold" FontFamily="Segoe UI" FontSize="18" Padding="10,0" HorizontalAlignment="Left"/>
+                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding body}" FontFamily="Segoe UI Symbol" FontSize="14" HorizontalAlignment="Stretch" TextWrapping="Wrap" Padding="10,0"/>
+            </Grid>
+        </DataTemplate>
         <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
         <CollectionViewSource
             x:Key="Issues"
             IsSourceGrouped="False"
             Source="{Binding repo.issues}"/>
+        <CollectionViewSource
+            x:Key="Collaborators"
+            IsSourceGrouped="False"
+            Source="{Binding repo.people}"/>
+        <CollectionViewSource
+            x:Key="Milestones"
+            IsSourceGrouped="False"
+            Source="{Binding repo.milestones}"/>
     </Page.Resources>
 
     <!--
@@ -34,15 +72,69 @@
                 <AppBarButton x:Name="MilestoneButton" Icon="Priority" Label="Milestones" Click="AppButton_Click"/>
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="AssignButton" Icon="Account" Label="Assign" Click="AppButton_Click" Visibility="{Binding SelectedItem, ElementName=issuesList, Converter={StaticResource nullVisibility}, ConverterParameter=true}"/>
-                <AppBarButton x:Name="PinButton" Icon="Pin" Label="Pin" Click="AppButton_Click" Visibility="{Binding SelectedItem, ElementName=issuesList, Converter={StaticResource nullVisibility}, ConverterParameter=true}">
+                <AppBarButton x:Name="AssignButton" Icon="Account" Label="Assign" Click="AppButton_Click" Visibility="Collapsed">
+                    <AppBarButton.Flyout>
+                        <Flyout>
+                            <Flyout.FlyoutPresenterStyle>
+                                <Style TargetType="FlyoutPresenter">
+                                    <Setter Property="Margin" Value="0"/>
+                                    <Setter Property="Padding" Value="15,15,0,5"/>
+                                </Style>
+                            </Flyout.FlyoutPresenterStyle>
+                            <ListView x:Name="People"
+                                      ItemsSource="{Binding Source={StaticResource Collaborators}}"
+                                      SelectionMode="None"
+                                      IsItemClickEnabled="True"
+                                      ItemClick="ListView_ItemClick"
+                                      Margin="0"
+                                      Padding="0">
+                                <ListViewItemPresenter Margin="0" PlaceholderBackground="White" />
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                            <Image Width="30" Height="30" Source="{Binding avatar_url}"/>
+                                            <TextBlock Text="{Binding login}" Margin="5" Padding="0"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                <AppBarButton Icon="Calendar" Label="Milestone" Visibility="Collapsed">
+                    <AppBarButton.Flyout>
+                        <Flyout>
+                            <Flyout.FlyoutPresenterStyle>
+                                <Style TargetType="FlyoutPresenter">
+                                    <Setter Property="Margin" Value="0"/>
+                                    <Setter Property="Padding" Value="15,15,0,5"/>
+                                </Style>
+                            </Flyout.FlyoutPresenterStyle>
+                            <ListView x:Name="milestonesList"
+                                      ItemsSource="{Binding Source={StaticResource Milestones}}"
+                                      SelectionMode="None"
+                                      IsItemClickEnabled="True"
+                                      ItemClick="ListView_ItemClick"
+                                      Margin="0"
+                                      Padding="0">
+                                <ListViewItemPresenter Margin="0" PlaceholderBackground="White" />
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding title}" Margin="5" Padding="0"/>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Flyout>
+                    </AppBarButton.Flyout>
+                </AppBarButton>
+                <AppBarButton x:Name="PinButton" Icon="Pin" Label="Pin" Click="AppButton_Click" Visibility="Collapsed">
                     <AppBarButton.Flyout>
                         <Flyout>
                             <TextBlock Style="{StaticResource BodyTextBlockStyle}">Issue Pinned to Home.</TextBlock>
                         </Flyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <AppBarButton x:Name="NoFilter" Label="Clear Filter" Icon="Filter" Visibility="{Binding FilterOn, Converter={StaticResource BooleanToVisibilityConverter}}" Click="AppButton_Click"/>
+                <AppBarButton x:Name="NoFilter" Label="Clear Filter" Icon="Filter" Visibility="{Binding FilterOn, Converter={StaticResource BooleanToVisibilityConverter}}" Click="AppButton_Click" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
@@ -91,6 +183,7 @@
                     HorizontalContentAlignment="Stretch"
                     VerticalAlignment="Stretch"
                     Grid.Row="1" 
+                    SelectionChanged="issuesList_SelectionChanged"
                     Margin="15,0,0,15" 
                     Background="#10000000"/>
         <ContentControl x:Name="issueDetailsPane" Grid.Column="1" Grid.Row="1"  Margin="15,0,15,15" 
@@ -160,8 +253,8 @@
                                 <TextBlock Style="{StaticResource HeaderTextBlockStyle}" FontSize="22" Text="Comments and Notes:" Padding="0,3"/>
                                 <ItemsControl HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding notes}" ItemTemplateSelector="{StaticResource notesSelector}"/>
                             </StackPanel>
-                            <TextBox Grid.Row="6" Grid.ColumnSpan="2" x:Name="newCommentBody" TextWrapping="Wrap" MinHeight="75" Margin="15"/>
-                            <Button Grid.Row="7" Grid.ColumnSpan="2" x:Name="newCommentButton" BorderThickness="2" HorizontalAlignment="Right" Margin="15,0">Comment</Button>
+                            <TextBox Grid.Row="6" Grid.ColumnSpan="2" x:Name="newCommentBody" TextWrapping="Wrap" MinHeight="75" Margin="15" IsSpellCheckEnabled="True" IsTextPredictionEnabled="True" IsTabStop="False" AcceptsReturn="True" PlaceholderText="Write a comment..." TextChanged="newCommentBody_TextChanged"/>
+                            <Button Grid.Row="7" Grid.ColumnSpan="2" x:Name="newCommentButton" BorderThickness="2" HorizontalAlignment="Right" Margin="15,0" Click="newCommentButton_Click">Comment</Button>
                         </Grid>
                     </ScrollViewer>
                 </DataTemplate>

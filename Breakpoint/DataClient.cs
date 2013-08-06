@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using breakpoint.DataModel;
+using Windows.UI.Popups;
 
 namespace breakpoint
 {
@@ -34,10 +35,23 @@ namespace breakpoint
         private ObservableCollection<Issue> _pinnedIssues;
         private ObservableCollection<Repository> _recentRepos;
 
+        public async void NotifyUser(String message)
+        {
+            await new MessageDialog(message).ShowAsync();
+        }
+
         public async Task<String> authenticate()
         {
             var loader = new Windows.ApplicationModel.Resources.ResourceLoader("breakpoint_secret");
-            accessToken = await HttpUtil.GetAccessCode("https://github.com/login/oauth/", loader.GetString("ClientID"), loader.GetString("ClientSecret"), loader.GetString("Scope"));
+            try
+            {
+                accessToken = await HttpUtil.GetAccessCode("https://github.com/login/oauth/", loader.GetString("ClientID"), loader.GetString("ClientSecret"), loader.GetString("Scope"));
+            }
+            catch (AccessTokenNotFoundException args)
+            {
+                NotifyUser("Uh oh, something went terribly wrong. Sorry about that! Breakpoint will now close. Verify network connectivity and try again. (" + args.Message + ")");
+                App.Current.Exit();
+            }
             return accessToken;
         }
 
@@ -59,6 +73,30 @@ namespace breakpoint
             {
                 repo.issues.Add(a);
             }
+        }
+        public async Task updateAssignee(User newAssignee, Issue issue)
+        {
+            issue.assignee = newAssignee;
+            PostModel.Issue content = (PostModel.Issue)PostModel.PostType.ConvertToPostModel(issue);
+            await HttpUtil.PostIssueAsync(accessToken, issue.url, content);
+        }
+        public async Task updateMilestone(Milestone newMilestone, Issue issue)
+        {
+            issue.milestone = newMilestone;
+            PostModel.Issue content = (PostModel.Issue)PostModel.PostType.ConvertToPostModel(issue);
+            await HttpUtil.PostIssueAsync(accessToken, issue.url, content);
+        }
+        public async Task getIssueContents(Issue issue)
+        {
+            await HttpUtil.GetIssueContentsAsync(accessToken, issue);
+        }
+        public async Task postIssueComment(Issue issue, String body)
+        {
+            PostModel.Comment comment = new PostModel.Comment();
+            comment.body = body;
+            Comment response = await HttpUtil.PostCommentAsync(accessToken, issue.url + "/comments", comment);
+            issue.notes.Add(response);
+            issue.comments++;
         }
         public DataType DataPointer { get { return PageRootDataPointer; } set { PageRootDataPointer = value; } }
         public async Task updateUserOrganization()

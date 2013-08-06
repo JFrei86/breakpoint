@@ -51,6 +51,11 @@ namespace breakpoint
         public RepoViewPage()
         {
             this.InitializeComponent();
+            if (!Application.Current.Resources.ContainsKey("CommentTemplate") && !Application.Current.Resources.ContainsKey("EventTemplate"))
+            {
+                Application.Current.Resources.Add(new KeyValuePair<object, object>("CommentTemplate", this.Resources["CommentTemplate"]));
+                Application.Current.Resources.Add(new KeyValuePair<object, object>("EventTemplate", this.Resources["EventTemplate"])); 
+            }
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += navigationHelper_LoadState;
             this.navigationHelper.SaveState += navigationHelper_SaveState;
@@ -69,6 +74,7 @@ namespace breakpoint
         {
             this.DefaultViewModel["repo"] = client.DataPointer;
             this.DefaultViewModel["FilterOn"] = false;
+            this.DefaultViewModel["CommentBody"] = "";
             await client.initializeRepo((Repository)client.DataPointer, null);
         }
 
@@ -130,9 +136,10 @@ namespace breakpoint
             }
             if (b.Label == "Refresh")
             {
-                issuesList.SelectedIndex = -1;
+                int issue = issuesList.SelectedIndex;
                 LoadingProgressBar.IsIndeterminate = true;
                 await client.initializeRepo(this.DefaultViewModel["repo"] as Repository, (args == null) ? null : args.args);
+                issuesList.SelectedIndex = issue;
                 LoadingProgressBar.IsIndeterminate = false;
             }
             if (b.Label == "Pin")
@@ -144,7 +151,13 @@ namespace breakpoint
                         b.Flyout.ShowAt(b);
                 }
             }
-
+            if(b.Label == "Assign")
+            {
+                if (issuesList.SelectedItem != null && b.Flyout != null)
+                {
+                    b.Flyout.ShowAt(b);
+                }
+            }
         }
         public async void unloaded(object sender, RoutedEventArgs e)
         {
@@ -154,6 +167,61 @@ namespace breakpoint
             this.DefaultViewModel["FilterOn"] = !args.IsDefault();
             await client.updateRepoIssues(this.DefaultViewModel["repo"] as Repository, args.args);
             LoadingProgressBar.IsIndeterminate = false;
+        }
+
+        private async void newCommentButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (issuesList.SelectedItem == null)
+                return;
+            LoadingProgressBar.IsIndeterminate = true;
+            await client.postIssueComment(issuesList.SelectedItem as Issue, this.DefaultViewModel["CommentBody"] as string);
+            this.DefaultViewModel["CommentBody"] = "";
+            LoadingProgressBar.IsIndeterminate = false;
+        }
+
+        private async void issuesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ((AppBarButton)(this.BottomAppBar as CommandBar).SecondaryCommands[0]).Visibility = (issuesList.SelectedItem == null) ? Visibility.Collapsed : Visibility.Visible;
+            ((AppBarButton)(this.BottomAppBar as CommandBar).SecondaryCommands[1]).Visibility = (issuesList.SelectedItem == null) ? Visibility.Collapsed : Visibility.Visible;
+            ((AppBarButton)(this.BottomAppBar as CommandBar).SecondaryCommands[2]).Visibility = (issuesList.SelectedItem == null) ? Visibility.Collapsed : Visibility.Visible;
+            if (issuesList.SelectedItem == null)
+                return;
+            LoadingProgressBar.IsIndeterminate = true;
+            await client.getIssueContents(issuesList.SelectedItem as Issue);
+            LoadingProgressBar.IsIndeterminate = false;
+        }
+
+        private void newCommentBody_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            this.DefaultViewModel["CommentBody"] = (sender as TextBox).Text;
+        }
+
+        private void Button_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            if ((sender as Button).Flyout != null)
+            {
+                (sender as Button).Flyout.ShowAt(sender as FrameworkElement);
+            }
+
+        }
+        private async void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if (issuesList.SelectedItem != null && e.ClickedItem is User)
+            {
+                if ((sender as ListView).SelectedItem != null && (e.ClickedItem as User).url != (issuesList.SelectedItem as Issue).assignee.url)
+                {
+                    await client.updateAssignee(e.ClickedItem as User, issuesList.SelectedItem as Issue);
+                }
+                this.BottomAppBar.IsOpen = false;
+            }
+            if (issuesList.SelectedItem != null && e.ClickedItem is Milestone)
+            {
+                if (e.ClickedItem != null && (e.ClickedItem as Milestone).url != (issuesList.SelectedItem as Issue).milestone.url)
+                {
+                    await client.updateMilestone(e.ClickedItem as Milestone, issuesList.SelectedItem as Issue);
+                }
+                this.BottomAppBar.IsOpen = false;
+            }
         }
     }
 }

@@ -74,6 +74,7 @@ namespace breakpoint.DataModel
         public ObservableCollection<Issue> issues { get { return _issues; } set { this.SetProperty(ref this._issues, value); } }
         public ObservableCollection<Label> labels { get { return _labels; } set { this.SetProperty(ref this._labels, value); } }
         public ObservableCollection<Milestone> milestones { get { return _milestones; } set { this.SetProperty(ref this._milestones, value); } }
+        public ObservableCollection<User> people { get { return _people; } set { this.SetProperty(ref this._people, value); } }
         public Milestone active_milestone { get; set; }
 
         private String _full_name;
@@ -89,6 +90,7 @@ namespace breakpoint.DataModel
         private ObservableCollection<Issue> _issues;
         private ObservableCollection<Label> _labels;
         private ObservableCollection<Milestone> _milestones;
+        private ObservableCollection<User> _people;
 
     }
     [DataContract]

@@ -174,6 +174,11 @@ namespace breakpoint
             Object response = await GetAsync(access_code, Uri, args, typeof(DataModel.Issue[]));
             return (DataModel.Issue[])response;
         }
+        public static async Task<DataModel.User[]> GetRepoPeopleAsync(String access_code, String Uri)
+        {
+            Object response = await GetAsync(access_code, Uri, null, typeof(User[]));
+            return (DataModel.User[])response;
+        }
         public static async Task<Label[]> GetRepoLabelsAsync(String access_code, String Uri)
         {
             Object response = await GetAsync(access_code, Uri, null, typeof(DataModel.Label[]));
@@ -184,25 +189,34 @@ namespace breakpoint
             Task<DataModel.Issue[]> task_issues = HttpUtil.GetRepoIssuesAsync(access_code, repo.url + "/issues", args);
             Task<Milestone[]> task_mil = HttpUtil.GetRepoMilestonesAsync(access_code, repo.url + "/milestones");
             Task<Label[]> task_labels = HttpUtil.GetRepoLabelsAsync(access_code, repo.url + "/labels");
+            Task<User[]> task_collab = HttpUtil.GetRepoPeopleAsync(access_code, repo.url + "/assignees");
 
-            repo.issues = new ObservableCollection<DataModel.Issue>();
-            repo.milestones = new ObservableCollection<Milestone>();
             repo.labels = new ObservableCollection<Label>();
-
             Label[] labels = await task_labels;
             foreach (Label a in labels)
             {
                 repo.labels.Add(a);
             }
+
+            repo.milestones = new ObservableCollection<Milestone>();
             Milestone[] milestones = await task_mil;
             foreach (Milestone a in milestones)
             {
                 repo.milestones.Add(a);
             }
+
+            repo.issues = new ObservableCollection<DataModel.Issue>();
             DataModel.Issue[] issues = await task_issues;
             foreach (DataModel.Issue a in issues)
             {
                 repo.issues.Add(a);
+            }
+
+            repo.people = new ObservableCollection<User>();
+            User[] people = await task_collab;
+            foreach (User a in people)
+            {
+                repo.people.Add(a);
             }
         }
         public static async Task<DataModel.Comment[]> GetIssueCommentsAsync(String access_code, String Uri)
@@ -218,7 +232,7 @@ namespace breakpoint
         public static async Task GetIssueContentsAsync(String access_code, DataModel.Issue issue)
         {
             Task<Event[]> taskA = GetIssueEventsAsync(access_code, issue.url + "/events");
-            Task<DataModel.Comment[]> taskB = GetIssueCommentsAsync(access_code, issue.url + "/comments");
+            Task<DataModel.Comment[]> taskB = GetIssueCommentsAsync(access_code, issue.url + "/comments?sort=created&direction=desc");
             Event[] events = await taskA;
             DataModel.Comment[] comments = await taskB;
             if(events.Length + comments.Length != 0){
@@ -271,9 +285,8 @@ namespace breakpoint
         }
         public static async Task<DataModel.Issue> PostIssueAsync(String access_code, String Uri, PostModel.Issue issue)
         {
-            Object message = await PostAsync(access_code, Uri, issue, typeof(PostModel.Issue));
+            Object message = await PostAsync(access_code, Uri, issue, typeof(DataModel.Issue));
             return (DataModel.Issue)message;
         }
-        
     }
 }
