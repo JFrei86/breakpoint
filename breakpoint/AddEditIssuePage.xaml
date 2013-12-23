@@ -1,0 +1,125 @@
+﻿<Page
+    x:Name="pageRoot"
+    x:Class="breakpoint.AddEditIssuePage"
+    DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Self}}"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:breakpoint"
+    xmlns:common="using:breakpoint.Common"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    RequestedTheme="Light">
+
+    <Page.Resources>
+        <common:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <!-- TODO: Delete this line if the key AppName is declared in App.xaml -->
+        <CollectionViewSource
+            x:Key="Issues"
+            IsSourceGrouped="False"
+            Source="{Binding repo.issues}"/>
+        <CollectionViewSource
+            x:Key="Collaborators"
+            IsSourceGrouped="False"
+            Source="{Binding repo.people}"/>
+        <CollectionViewSource
+            x:Key="Milestones"
+            IsSourceGrouped="False"
+            Source="{Binding repo.milestones}"/>
+        <CollectionViewSource
+            x:Key="Labels"
+            IsSourceGrouped="False"
+            Source="{Binding labels}"/>
+    </Page.Resources>
+
+    <!--
+        This grid acts as a root panel for the page that defines two rows:
+        * Row 0 contains the back button and page title
+        * Row 1 contains the rest of the page layout
+    -->
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                <GradientStop Color="#FFB4B4B4" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="140"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="346"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Back button and page title -->
+        <Grid Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <AppBarButton x:Name="backButton" Icon="Back" Height="95" Margin="10,46,10,0"
+                          Command="{Binding NavigationHelper.GoBackCommand, ElementName=pageRoot}" 
+                          Visibility="{Binding IsEnabled, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=Self}}"
+                          AutomationProperties.Name="Back"
+                          AutomationProperties.AutomationId="BackButton"
+                          AutomationProperties.ItemType="Navigation Button"/>
+            <TextBox x:Name="pageTitle" FontFamily="Segoe UI Light" FontWeight="Light" FontSize="56"  Grid.Column="1" 
+                       IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,0,20" PlaceholderText="[Issue Title]" Background="{x:Null}" BorderBrush="{x:Null}" />
+            <Rectangle Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" Height="2" Width="auto" Fill="#181818" Margin="0,0,0,35"/>
+            <StackPanel  Grid.Column="2" Orientation="Horizontal">
+                <AppBarButton Icon="Save" Height="95" Margin="10,46,-10,0"/>
+                <AppBarButton Icon="Delete" Height="95" Margin="-10,46,10,0"/>
+            </StackPanel>
+        </Grid>
+        <ListView Grid.Column="0" Grid.Row="1"
+                      x:Name="LabelsList"
+                      Header="Labels"
+                      FontSize="26"
+                      SelectionMode="Multiple"
+                      FontWeight="Light"
+                      FontFamily="Segoe UI Light"
+                      Margin="35,10,10,0"
+                      ItemsSource="{Binding Source={StaticResource Labels}}"
+                      ItemTemplate="{StaticResource LabelListTemplate}"/>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <ComboBox Header="Assignee" Height="90" Margin="0,0,10,0" FontSize="26" FontWeight="Light" FontFamily="Segoe UI Light">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                            <Image Width="30" Height="30" Source="{Binding avatar_url}"/>
+                            <TextBlock Text="{Binding login}" Margin="5" Padding="0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <ComboBox Header="Milestone" Height="90" Grid.Column="1" Margin="0,0,10,0" FontSize="26" FontWeight="Light" FontFamily="Segoe UI Light">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                            <Image Width="30" Height="30" Source="{Binding avatar_url}"/>
+                            <TextBlock Text="{Binding login}" Margin="5" Padding="0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBox Grid.ColumnSpan="2" Grid.Row="1" Margin="0,10,10,10"/>
+        </Grid>
+    </Grid>
+</Page>

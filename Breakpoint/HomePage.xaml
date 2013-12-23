@@ -9,7 +9,8 @@
     x:Name="pageRoot"
     x:Class="breakpoint.HomePage"
     DataContext="{Binding DefaultViewModel, RelativeSource={RelativeSource Mode=Self}}"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    RequestedTheme="Light">
 
     <Page.Resources>
         <x:String x:Key="ChevronGlyph">&#xE26B;</x:String>
@@ -26,10 +27,10 @@
                               IsSourceGrouped="True"
                               Source="{Binding client.userOrgs}"
                               ItemsPath="repos"/>
-        
+
     </Page.Resources>
     <Page.BottomAppBar>
-        <CommandBar Background="#ff600505" BorderBrush="Transparent">
+        <CommandBar Background="#FEFEFEFE" BorderBrush="Transparent">
             <CommandBar.PrimaryCommands>
                 <AppBarButton x:Name="RefreshButton" Icon="Sync" Label="Refresh" Click="AppBarButton_Click"/>
                 <AppBarButton x:Name="LogoutButton" Icon="Permissions" Label="Log Out" Click="AppBarButton_Click"/>
@@ -44,28 +45,36 @@
         This grid acts as a root panel for the page.
     -->
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                <GradientStop Color="#FFB4B4B4" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.ChildrenTransitions>
             <TransitionCollection>
                 <EntranceThemeTransition/>
             </TransitionCollection>
         </Grid.ChildrenTransitions>
         <Hub Grid.Row="1">
+            <Hub.Transitions>
+            </Hub.Transitions>
             <Hub.Header>
-                <Grid>
+                <Grid RequestedTheme="Dark" Background="#A0181818" MaxHeight="85" Margin="0,-10,0,-5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Border Width="65" Height="65"  Margin="0,0,10,0">
+                    <Border Width="65" Height="65"  Margin="10,0,10,0">
                         <Border.Background>
                             <ImageBrush ImageSource="Assets/blacktocat-32.png"/>
                         </Border.Background>
                         <Image Source="{Binding client.authenticatedUser.avatar_url}" Height="65" Width="65"/>
                     </Border>
-                    <TextBlock Grid.Column="1" Text="{StaticResource AppName}" FontFamily="Levenim MT" MaxHeight="65"/>
+                    <TextBlock Grid.Column="1" Text="{StaticResource AppName}" FontFamily="Levenim MT" Padding="0,10,10,5"/>
                 </Grid>
             </Hub.Header>
-            <HubSection Width="750" Header="Home" Background="#FF9E0505">
+            <HubSection Width="750" Header="Home" Background="#FF181818" RequestedTheme="Dark">
                 <DataTemplate>
                     <Grid ScrollViewer.VerticalScrollMode="Enabled">
                         <Grid.RowDefinitions>
@@ -103,16 +112,15 @@
                     </Grid>
                 </DataTemplate>
             </HubSection>
-
             <HubSection x:Uid="Section1Header" Header="Recent Repositories" Width="420">
                 <DataTemplate>
-                    <Grid>
+                    <Grid RequestedTheme="Dark">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <TextBlock Grid.Row="0" Style="{StaticResource SubheaderTextBlockStyle}" Text="No Recent Repositories." FontSize="20" Margin="5"
-							Visibility="{Binding client.recentRepos.Count, ConverterParameter=false, Converter={StaticResource nullVisibility}}"/>
+							Visibility="{Binding client.recentRepos.Count, ConverterParameter=false, Converter={StaticResource nullVisibility}}" RequestedTheme="Light"/>
                         <GridView ItemsSource="{Binding Source={StaticResource recentReposViewSource}}"
                                   ItemTemplate="{StaticResource RecentRepoTile}"
                                   IsItemClickEnabled="True"
@@ -132,6 +140,7 @@
             <HubSection x:Uid="Section2Header" MinWidth="420" Header="Organizations">
                 <DataTemplate>
                     <GridView
+                        RequestedTheme="Dark"
 						x:Name="userOrgsList"
 						Margin="-14,-4,0,0"
 						ItemsSource="{Binding Source={StaticResource userOrgsViewSource}}"
@@ -153,7 +162,7 @@
                                             <Button
     								AutomationProperties.Name="Group Title"
     								Style="{StaticResource TextBlockButtonStyle}">
-                                                <StackPanel Orientation="Horizontal">
+                                                <StackPanel Orientation="Horizontal" RequestedTheme="Light">
                                                     <TextBlock Text="{Binding name}" Margin="3,-7,10,10" Style="{StaticResource SubheaderTextBlockStyle}" />
                                                     <TextBlock Text="{StaticResource ChevronGlyph}" FontFamily="Segoe UI Symbol" Margin="0,-7,0,10" Style="{StaticResource SubheaderTextBlockStyle}"/>
                                                 </StackPanel>
@@ -162,7 +171,7 @@
                                     </DataTemplate>
                                 </GroupStyle.HeaderTemplate>
                                 <GroupStyle.Panel>
-                                    <ItemsPanelTemplate>
+                                    <ItemsPanelTemplate >
                                         <VariableSizedWrapGrid Orientation="Vertical" Margin="0,0,80,0" MaxWidth="980"/>
                                     </ItemsPanelTemplate>
                                 </GroupStyle.Panel>

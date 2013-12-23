@@ -103,6 +103,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AddEditIssuePage.xaml.cs">
+      <DependentUpon>AddEditIssuePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
@@ -120,6 +123,7 @@
     <Compile Include="FilterIssuesFlyout.xaml.cs">
       <DependentUpon>FilterIssuesFlyout.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HashToBrushConverter.cs" />
     <Compile Include="HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
@@ -143,9 +147,12 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <PRIResource Include="breakpoint_secret.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AddEditIssuePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Content Include="Assets\blacktocat-32.png" />
     <Content Include="Assets\Logo.scale-100.png" />
     <Content Include="Assets\SmallLogo.scale-100.png" />
@@ -183,7 +190,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="breakpoint_TemporaryKey.pfx" />
+    <PRIResource Include="breakpoint_secret.resw" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
     <VisualStudioVersion>12.0</VisualStudioVersion>

@@ -2,8 +2,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:breakpoint">
+    <local:HashToBrushConverter x:Name="ColorMaker"/>
     <DataTemplate x:Key="RepoSummaryTemplate">
-        <StackPanel Width="310" Height="250" Background="#FF600505">
+        <StackPanel Width="310" Height="250" Background="{Binding owner, Converter={StaticResource ColorMaker}}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <TextBlock FontFamily="Segoe UI Symbol" FontSize="18" TextAlignment="Right" Text="&#xE128;" Padding="5"/>
                 <TextBlock FontFamily="Segoe UI Symbol" FontSize="18" TextAlignment="Right" Text="{Binding isPrivate, Converter={StaticResource privacyConverter}}" Padding="3,5,10,0"/>
@@ -35,7 +36,7 @@
         </StackPanel>
     </DataTemplate>
     <DataTemplate x:Key="IssueTileTemplate">
-        <Grid Width="150" Height="150" Background="#44FFFFFF">
+        <Grid Width="150" Height="150" Background="{Binding owner, Converter={StaticResource ColorMaker}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
@@ -56,7 +57,7 @@
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="RecentRepoTile">
-        <Grid Width="310" Height="150" Background="#FF600505">
+        <Grid Width="310" Height="150" Background="{Binding owner, Converter={StaticResource ColorMaker}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -123,7 +124,7 @@
         </Grid>
     </DataTemplate>
     <DataTemplate x:Key="IssueListItemTemplate">
-        <Grid>
+        <Grid Background="{Binding DefaultViewModel[repo].owner, Converter={StaticResource ColorMaker}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto"/>

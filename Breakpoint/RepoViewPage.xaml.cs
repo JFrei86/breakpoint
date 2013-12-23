@@ -158,6 +158,21 @@ namespace breakpoint
                     b.Flyout.ShowAt(b);
                 }
             }
+            if(b.Label == "Add")
+            {
+                this.Frame.Navigate(typeof(AddEditIssuePage), null);
+            }
+            if(b.Label == "Edit")
+            {
+                if (issuesList.SelectedItem != null)
+                {
+                    this.Frame.Navigate(typeof(AddEditIssuePage), new KeyValuePair<object, object>(issuesList.SelectedItem, this.DefaultViewModel["repo"]));
+                }
+            }
+            if(b.Label == "Redo")
+            {
+
+            }
         }
         public async void unloaded(object sender, RoutedEventArgs e)
         {

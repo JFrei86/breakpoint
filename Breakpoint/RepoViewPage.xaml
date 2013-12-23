@@ -8,7 +8,8 @@
     xmlns:common="using:breakpoint.Common"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    RequestedTheme="Light">
 
     <Page.Resources>
         <DataTemplate x:Key="EventTemplate">
@@ -63,11 +64,11 @@
         * Row 1 contains the rest of the page layout
     -->
     <Page.BottomAppBar>
-        <CommandBar Background="#FF600505" BorderBrush="Transparent">
+        <CommandBar Background="#FEFEFEFE" BorderBrush="Transparent">
             <CommandBar.PrimaryCommands>
                 <AppBarButton x:Name="RefreshButton" Icon="Sync" Label="Refresh" Click="AppButton_Click"/>
                 <AppBarButton x:Name="SettingsButton" Icon="Filter" Label="Filter" Click="AppButton_Click"/>
-                <AppBarSeparator Foreground="White"/>
+                <AppBarSeparator/>
                 <AppBarButton x:Name="HomeButton" Icon="Home" Label="Home" Click="AppButton_Click"/>
                 <AppBarButton x:Name="MilestoneButton" Icon="Priority" Label="Milestones" Click="AppButton_Click"/>
             </CommandBar.PrimaryCommands>
@@ -139,6 +140,12 @@
         </CommandBar>
     </Page.BottomAppBar>
     <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFF0F0F0" Offset="0"/>
+                <GradientStop Color="#FFB4B4B4" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.ChildrenTransitions>
             <TransitionCollection>
                 <EntranceThemeTransition/>
@@ -168,10 +175,10 @@
             <TextBlock x:Name="pageTitle" Text="{Binding repo.full_name}" Style="{StaticResource HeaderTextBlockStyle}" Grid.Column="1" 
                        IsHitTestVisible="false" TextWrapping="NoWrap" VerticalAlignment="Bottom" Margin="0,0,30,40"/>
             <StackPanel Orientation="Horizontal" Grid.Column="2" HorizontalAlignment="Right" Margin="0,0,30,0">
-                <AppBarButton IsCompact="True" Icon="Add" Height="95" Margin="10,46,0,0" Click="AppButton_Click"/>
-                <AppBarSeparator Height="95" Margin="-15,46,-15,0" Foreground="White" Visibility="{Binding SelectedItem, ElementName=issuesList, Converter={StaticResource nullVisibility}, ConverterParameter=true}"/>
-                <AppBarButton IsCompact="True" Icon="Edit" Height="95" Margin="0,46,10,0" Click="AppButton_Click" Visibility="{Binding SelectedItem, ElementName=issuesList, Converter={StaticResource nullVisibility}, ConverterParameter=true}"/>
-                <AppBarButton IsCompact="True" Icon="Redo" Height="95" Margin="10,46,10,0" Click="AppButton_Click" Visibility="{Binding SelectedItem, ElementName=issuesList, Converter={StaticResource nullVisibility}, ConverterParameter=true}"/>
+                <AppBarButton IsCompact="True" Label="Add" Icon="Add" Height="95" Margin="10,46,0,0" Click="AppButton_Click"/>
+                <AppBarSeparator Height="95" Margin="-15,46,-15,0" Foreground="#181818" Visibility="{Binding SelectedItem, ElementName=issuesList, Converter={StaticResource nullVisibility}, ConverterParameter=true}"/>
+                <AppBarButton IsCompact="True" Label="Edit" Icon="Edit" Height="95" Margin="0,46,10,0" Click="AppButton_Click" Visibility="{Binding SelectedItem, ElementName=issuesList, Converter={StaticResource nullVisibility}, ConverterParameter=true}"/>
+                <AppBarButton IsCompact="True" Label="Redo" Icon="Redo" Height="95" Margin="10,46,10,0" Click="AppButton_Click" Visibility="{Binding SelectedItem, ElementName=issuesList, Converter={StaticResource nullVisibility}, ConverterParameter=true}"/>
             </StackPanel>
         </Grid>
         <ListView x:Name="issuesList"
@@ -184,8 +191,7 @@
                     VerticalAlignment="Stretch"
                     Grid.Row="1" 
                     SelectionChanged="issuesList_SelectionChanged"
-                    Margin="15,0,0,15" 
-                    Background="#10000000"/>
+                    Margin="15,0,0,15"/>
         <ContentControl x:Name="issueDetailsPane" Grid.Column="1" Grid.Row="1"  Margin="15,0,15,15" 
                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                             Content="{Binding SelectedItem, ElementName=issuesList}"
@@ -253,7 +259,7 @@
                                 <TextBlock Style="{StaticResource HeaderTextBlockStyle}" FontSize="22" Text="Comments and Notes:" Padding="0,3"/>
                                 <ItemsControl HorizontalContentAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding notes}" ItemTemplateSelector="{StaticResource notesSelector}"/>
                             </StackPanel>
-                            <TextBox Grid.Row="6" Grid.ColumnSpan="2" x:Name="newCommentBody" TextWrapping="Wrap" MinHeight="75" Margin="15" IsSpellCheckEnabled="True" IsTextPredictionEnabled="True" IsTabStop="False" AcceptsReturn="True" PlaceholderText="Write a comment..." TextChanged="newCommentBody_TextChanged"/>
+                            <TextBox Grid.Row="6" Grid.ColumnSpan="2" x:Name="newCommentBody" TextWrapping="Wrap" MinHeight="75" Margin="15" IsSpellCheckEnabled="True" IsTextPredictionEnabled="True" IsTabStop="False" AcceptsReturn="True" PlaceholderText="Write a comment..." TextChanged="newCommentBody_TextChanged" IsReadOnly="False"/>
                             <Button Grid.Row="7" Grid.ColumnSpan="2" x:Name="newCommentButton" BorderThickness="2" HorizontalAlignment="Right" Margin="15,0" Click="newCommentButton_Click">Comment</Button>
                         </Grid>
                     </ScrollViewer>

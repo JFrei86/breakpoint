@@ -30,22 +30,21 @@
             <SolidColorBrush x:Key="ProgressBarBorderThemeBrush" Color="Transparent" />
             <SolidColorBrush x:Key="ProgressBarForegroundThemeBrush" Color="White" />
             <SolidColorBrush x:Key="ProgressBarIndeterminateForegroundThemeBrush" Color="White" />
-            <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#FF9E0505" />
+            <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="#FFFFF6A4" />
 
             <SolidColorBrush x:Key="ListViewItemCheckHintThemeBrush" Color="#FFFFFFFF" />
             <SolidColorBrush x:Key="ListViewItemCheckSelectingThemeBrush" Color="#FFFFFFFF" />
             <SolidColorBrush x:Key="ListViewItemCheckThemeBrush" Color="#FFFFFFFF" />
-            <SolidColorBrush x:Key="ListViewItemDragBackgroundThemeBrush" Color="#994617B4" />
-            <SolidColorBrush x:Key="ListViewItemDragForegroundThemeBrush" Color="White" />
-            <SolidColorBrush x:Key="ListViewItemFocusBorderThemeBrush" Color="#FFFFFFFF"  />
-            <SolidColorBrush x:Key="ListViewItemOverlayBackgroundThemeBrush" Color="#A6000000" />
+            <SolidColorBrush x:Key="ListViewItemFocusBorderThemeBrush" Color="#FF181818"  />
+            <SolidColorBrush x:Key="ListViewItemOverlayBackgroundThemeBrush" Color="#FFFFFFFF" />
             <SolidColorBrush x:Key="ListViewItemOverlayForegroundThemeBrush" Color="#FFFFFFFF" />
-            <SolidColorBrush x:Key="ListViewItemOverlaySecondaryForegroundThemeBrush" Color="#99FFFFFF"/>
-            <SolidColorBrush x:Key="ListViewItemPlaceholderBackgroundThemeBrush" Color="#FF3D3D3D" />
-            <SolidColorBrush x:Key="ListViewItemSelectedBackgroundThemeBrush" Color="#FF9E0505" />
-            <SolidColorBrush x:Key="ListViewItemSelectedForegroundThemeBrush" Color="#FFFFFFFF" />
-            <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="#FF9E1515" />
-            <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBorderThemeBrush" Color="#FF9E0505" />
+            <SolidColorBrush x:Key="ListViewItemOverlaySecondaryForegroundThemeBrush" Color="#18FFFFFF"/>
+            <SolidColorBrush x:Key="ListViewItemPlaceholderBackgroundThemeBrush" Color="#181818" />
+            <SolidColorBrush x:Key="ListViewItemSelectedBackgroundThemeBrush" Color="#FF181818" />
+            <SolidColorBrush x:Key="ListViewItemSelectedForegroundThemeBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="ListViewItemSelectedBorderThemeBrush" Color="#FF181818" />
+            <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBackgroundThemeBrush" Color="#10FFFFFF" />
+            <SolidColorBrush x:Key="ListViewItemSelectedPointerOverBorderThemeBrush" Color="#FF181818" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
